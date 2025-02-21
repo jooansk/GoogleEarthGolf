@@ -255,8 +255,9 @@ window["clubSelected"] = function(club)
 {
 	myClubs.setClub(club);
 	var distance = getClubDistance(club);
-	
+
 	emulator.sendPlayer('RH',club,distance);
+	
 }
 
 
@@ -1252,12 +1253,13 @@ function startShot()
 				}
 				else
 				{
+					emulator.sendAck(202,"Ready");
 					myLine.geometry.setDrawRange( 0, 1 );
 					myShotGroup.position.copy(ballPosition);
 					myBall.position.set(0,0,0);
 					moveToHole(false,false);
 					myTransition.camera.lookAt(myMarker.position);
-					emulator.sendAck(202,"Ready");
+					
 				}
 			}
 		}
