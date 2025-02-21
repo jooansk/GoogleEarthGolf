@@ -97,7 +97,6 @@ let minimapRaycaster;
 let cameraDir;
 let shotTargetDir;
 var intervalTimer = null;
-var continueFromShot = true;
 
 // Animation
 let step = 0;
@@ -310,7 +309,6 @@ animate();
 settings = new SettingsPage(["openSettings","closeSettings","goToCoursePage"]);
 
 function reinstantiateTiles() {
-	console.log(settings);
 	if(!settings)
 	{
 		setTimeout(reinstantiateTiles,1000);
@@ -1226,8 +1224,7 @@ function startShot()
 			 myElements[selectedHole].children[1]; // <-- green object
 			var isPointInFill = myElements[selectedHole].children[1].isPointInFill(pointObj);
 			//console.log("Did you hit the green? " + isPointInFill);
-			
-			if(!continueFromShot)
+			if(!(settings.getSettings().continueShots == 'yes'))
 			{
 				setTimeout(() => {
 					myTransition.camera.position.copy(shotPosition);

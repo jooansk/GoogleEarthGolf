@@ -7,7 +7,7 @@ class SettingsPage {
 	var mySettings = localStorage.getItem(this.name);
 	if(!mySettings)
 	{
-		mySettings = {clubs:[{name:'DR',distance:300},{name:'3W',distance:265},{name:'5W',distance:245},{name:'I3',distance:235},{name:'I4',distance:225},{name:'I5',distance:215},{name:'I6',distance:195},{name:'I7',distance:180},{name:'I8',distance:165},{name:'I9',distance:150},{name:'PW',distance:135},{name:'50',distance:120},{name:'SW',distance:105},{name:'LW',distance:90}],speed:'mph',distance:'meters',key:'-',assetId:'-'};
+		mySettings = {clubs:[{name:'DR',distance:300},{name:'3W',distance:265},{name:'5W',distance:245},{name:'I3',distance:235},{name:'I4',distance:225},{name:'I5',distance:215},{name:'I6',distance:195},{name:'I7',distance:180},{name:'I8',distance:165},{name:'I9',distance:150},{name:'PW',distance:135},{name:'50',distance:120},{name:'SW',distance:105},{name:'LW',distance:90}],continueShots:'yes',speed:'mph',distance:'meters',key:'-',assetId:'-'};
 		localStorage.setItem(this.name,JSON.stringify(mySettings));
 	}
 	else
@@ -45,6 +45,11 @@ class SettingsPage {
 	this.items.push(new SettingsItem('top','left',550,400,this.div,'Cesium auth key',mySettings.key,callbacks,this.items.length));
 	this.items.push(new SettingsItem('top','left',550,500,this.div,'Asset id',mySettings.assetId,callbacks,this.items.length));
 	this.items.push(new SettingsButton('bottom','right',200,100,this.div,'Select course',callbacks[2],this.items.length));
+	if(!mySettings.continueShots)
+	{
+		mySettings["continueShots"] = 'yes';
+	}
+	this.items.push(new SettingsItem('top','left',550,600,this.div,'Continue after shot',mySettings.continueShots,callbacks,this.items.length,["yes","no"]));
 	
   }
   
@@ -62,7 +67,6 @@ class SettingsPage {
   
   open(id)
   {
-	  console.log(id);
 	  this.items[id].showBackground();
   }
   
@@ -83,6 +87,10 @@ class SettingsPage {
 		case 3:
 			this.settings.assetId = value.value;
 			break;
+		case 5:
+			this.settings.continueShots = value.value;
+			break;
+			
 	  }
 	  localStorage.setItem(this.name,JSON.stringify(this.settings));
   }
