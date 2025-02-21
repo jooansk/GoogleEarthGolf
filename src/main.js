@@ -113,6 +113,7 @@ var hla = new DataTile("HLA","hla",5,480);
 var vla = new DataTile("VLA","vla",5,575);
 var dla = new DataTile("DLA","dla",5,670);
 var directionCtrl = new DirectionControls('top','left',170,window.innerHeight/2,"modifyTargetDirection");
+var shotAnimation = false;
 
 window["modifyTargetDirection"] = function(dir)
 {
@@ -1121,7 +1122,7 @@ function animate() {
 
 	if ( ! tiles ) return;
 
-	//controls.enabled = ! transition.animating;
+	controls.enabled = !shotAnimation;
 	controls.update();
 	transition.update();
 
@@ -1140,8 +1141,8 @@ function animate() {
 
 function startShot()
 {
+	shotAnimation = true;
 	start = Date.now();
-
 	const point = myShot.points[step];
 	myBall.position.set(point.x*1, point.z*1, point.y*1); // Swap y and z
 	var prevBallPosition = new Vector3();
@@ -1155,6 +1156,7 @@ function startShot()
 	step += 1;
   // Move the ball along the trajectory
   if ((step < myShot.points.length) && !simulationComplete) {
+	  
 	const point = myShot.points[step];
 	myLine.geometry.setDrawRange( 0, step+1 );
 	myBall.position.set(point.x*1, point.z*1, point.y*1); // Swap y and z
@@ -1209,7 +1211,7 @@ function startShot()
 			myBall.position.y += ballPosition.y-prevBallPosition.y+ 0.05;
 			//myBall.position.x += ballPosition.x-prevBallPosition.x;
 			//myBall.position.z += ballPosition.z-prevBallPosition.z;
-			
+			shotAnimation = false;
 			end = Date.now();
 			console.log(`Execution time: ${end - start} ms`);
 			clearInterval(intervalTimer);
@@ -1221,7 +1223,6 @@ function startShot()
 			const pointObj = mySvg.createSVGPoint();
 			pointObj.x = ballPosition.z;
 			pointObj.y = -ballPosition.x;
-
 			 myElements[selectedHole].children[1]; // <-- green object
 			var isPointInFill = myElements[selectedHole].children[1].isPointInFill(pointObj);
 			//console.log("Did you hit the green? " + isPointInFill);
@@ -1284,6 +1285,7 @@ function startShot()
 	step = 0;
 	prevDistance = Infinity;
 	emulator.sendAck(202,"Ready");
+	shotAnimation = false;
   }
   },10);
 }
