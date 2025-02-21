@@ -1,5 +1,5 @@
 class DirectionControls {
-  constructor(top,left,x,y,text,callback,id) {
+  constructor(top,left,x,y,callback) {
 
 	var div = document.createElement('div');
 	div.setAttribute('style',`position:absolute;${top}:${y}px;${left}:${x}px;width:60px;height:25px;`);
@@ -39,12 +39,12 @@ class DirectionControls {
      inkscape:current-layer="layer1" />
   <defs
      id="defs1" />
-  <g
+  <g onmouseover="this.style.fill='rgba(125,125,125,0.5)';" onmousedown="this.style.fill='rgba(125,125,125,0.8)';" onnouseup="this.style.fill='rgba(125,125,125,0.1)';" style="fill:rgba(0,41,32,0.75);" onmouseout="this.style.fill='rgba(0,41,32,0.75)'" onclick="${callback}(0)" 
      inkscape:label="Layer 1"
      inkscape:groupmode="layer"
      id="layer1">
     <path
-       style="fill:#002920;fill-opacity:0.75;stroke:#000000;stroke-width:0.278864;stroke-opacity:1"
+       style="stroke:#000000;stroke-width:0.278864;stroke-opacity:1"
        d="M 14.859801,39.616266 V 0.41828183 L 0.17423166,19.998212 Z"
        id="path1"
        sodipodi:nodetypes="cccc" />
@@ -55,7 +55,7 @@ class DirectionControls {
 	
 	
 	var div1 = document.createElement('div');
-	div1.setAttribute('style',`position:absolute;${top}:${y}px;left:${window.innerWidth-100}px;width:60px;height:25px;`);
+	div1.setAttribute('style',`position:absolute;${top}:${y}px;left:${window.innerWidth-80}px;width:60px;height:25px;`);
 	div1.innerHTML = `<?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <!-- Created with Inkscape (http://www.inkscape.org/) -->
 
@@ -66,7 +66,7 @@ class DirectionControls {
    version="1.1"
    id="svg1"
    inkscape:version="1.4 (86a8ad7, 2024-10-11)"
-   sodipodi:docname="arrow.svg"
+   sodipodi:docname="arrow2.svg"
    xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
    xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
    xmlns="http://www.w3.org/2000/svg"
@@ -92,13 +92,13 @@ class DirectionControls {
      inkscape:current-layer="layer1" />
   <defs
      id="defs1" />
-  <g
+  <g onmouseover="this.style.fill='rgba(125,125,125,0.5)';" onmousedown="this.style.fill='rgba(125,125,125,0.8)';" onnouseup="this.style.fill='rgba(125,125,125,0.1)';" style="fill:rgba(0,41,32,0.75);" onmouseout="this.style.fill='rgba(0,41,32,0.75)'" onclick="${callback}(1)" 
      inkscape:label="Layer 1"
      inkscape:groupmode="layer"
      id="layer1">
     <path
-       style="fill:#002920;fill-opacity:0.75;stroke:#000000;stroke-width:0.278864;stroke-opacity:1"
-       d=" M 0 0 L 0,39.616266 V 14.41828183 L 0.17423166,19.998212 Z"
+       style="stroke:#000000;stroke-width:0.278864;stroke-opacity:1"
+       d="M 0.139432,39.616266 V 0.41828183 L 14.825001,19.998212 Z"
        id="path1"
        sodipodi:nodetypes="cccc" />
   </g>

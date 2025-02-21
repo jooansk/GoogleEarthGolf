@@ -112,7 +112,27 @@ var sidespin = new DataTile("SIDE SPIN","ss",5,385);
 var hla = new DataTile("HLA","hla",5,480);
 var vla = new DataTile("VLA","vla",5,575);
 var dla = new DataTile("DLA","dla",5,670);
-var directionCtrl = new DirectionControls('top','left',170,window.innerHeight/2);
+var directionCtrl = new DirectionControls('top','left',170,window.innerHeight/2,"modifyTargetDirection");
+
+window["modifyTargetDirection"] = function(dir)
+{
+	try{
+		var increment = 0;
+		if(dir == 0)
+		{
+			increment = 1*Math.PI/180;
+		}
+		else
+		{
+			increment = -1*Math.PI/180;
+		}
+		modifyTargetAngle(increment);
+	}
+	catch(e)
+	{
+		// don't care
+	}
+}
 
 var selectedHole = -1;
 window["highlightHole"] = function(id)
@@ -137,6 +157,11 @@ window["highlightHole"] = function(id)
 		//wait
 	}
 }
+var initialRun = [];
+for(var i = 0; i < 19; ++i)
+{
+	initialRun.push(true);
+}
 window["updateHoleNumber"] = function(id,twoTimes=true)
 {
 	try{
@@ -149,9 +174,10 @@ window["updateHoleNumber"] = function(id,twoTimes=true)
 	holeSelection.update(id);
 	selectedHole = id;
 	moveToHole(false);
-	if(twoTimes)
+	if(initialRun[selectedHole])
 	{
-		setTimeout(()=>{updateHoleNumber(selectedHole,false);},500);
+		initialRun[selectedHole] = false;
+		setTimeout(()=>{updateHoleNumber(selectedHole,false);},2000);
 	}
 }
 var holeSelection = new HoleSelection(window.innerWidth/2-1038/2,0,"updateHoleNumber","highlightHole");
@@ -476,7 +502,18 @@ function init(course) {
 	
 	
 	renderer.domElement.addEventListener('dblclick',moveToHole);
-	
+	renderer.domElement.addEventListener('click',()=>{
+		try{
+			if(myShotGroup.position.distanceTo(myControls.pivotPoint) > 30)
+			{
+				setTarget(myControls.pivotPoint.x,myControls.pivotPoint.z);
+			}
+		}
+		catch(e)
+		{
+			//no worries
+		}
+	});
 	renderer.domElement.addEventListener('mousedown',(event)=>{
 		console.log(event);
 	});
@@ -585,7 +622,6 @@ function moveToHole(ïsDblClick=true,modifyCamera=true)
 		}
 		else
 		{
-			
 			myTransition.camera.position.set(points[0].x+20,points[0].y+20,points[0].z+20);
 			myControls.pivotPoint.set(points[0].x,points[0].y,points[0].z);
 		}
@@ -775,8 +811,10 @@ window["setMarker"] = function(x,y,z,redo=false)
 	drawingContext.fillText(`${heightDifference} ${distanceUnit}`, 100, -30);
 
 	drawingContext.font = "bold 48px serif";
+	var v4 = new Vector2(myMarker.position.x,myMarker.position.z);
+	var v5 = new Vector2(distanceToTarget.x,distanceToTarget.z);
 	
-	var distToTarget = distanceUnit == 'meters' ? distanceToTarget.distanceTo(myMarker.position) : distanceToTarget.distanceTo(myMarker.position)*1.0936133;
+	var distToTarget = distanceUnit == 'meters' ? v4.distanceTo(v5) : v4.distanceTo(v5)*1.0936133;
 	clubSelected(getBestClubName(distanceUnit == 'yards' ? distToTarget : distToTarget*1.0936133));
 	//var text = `${distanceToTarget.distanceTo(myMarker.position)*1.0936133} yards`;
 	drawingContext.fillText(`${parseFloat(distToTarget).toFixed(1)}  ${distanceUnit}`, 40, -80);
@@ -909,19 +947,11 @@ window["drawShot"] = function()
 	line.scale.y = 1;
 	line.scale.z = 1;
 	line.geometry.setDrawRange( 0, 1 );
-	
 
-	
-	//shadowBallLinePoints.push(new Vector3(points[0].x,points[0].y,points[0].z));
-	shadowBallLinePoints = myShot.points.map(p => new Vector3(p.x, p.z, p.y));
-    const geometry1 = new BufferGeometry().setFromPoints(shadowBallLinePoints);
-	const material1 = new LineBasicMaterial( { color: 0xffffff } );
-	const line1 = new Line(geometry1, material1);
 	line.geometry.setDrawRange( 0, 0 );
     group.add(line);
 	//scene.add(line1);
 	window["myLine"] = line;
-	window["myShadowBallLine"] = line1;
 	//const positionAttribute = line.geometry.getAttribute( 'position' );
 	
 
@@ -941,10 +971,7 @@ window["drawShot"] = function()
 
 window["addTrajectory"] = function()
 {
-	if(myShotGroup != null)
-	{
-		myShotGroup.parent.remove(myShotGroup);
-	}
+	
 	    // Create trajectory line
     const points = myShot.points.map(p => new Vector3(p.x, p.z, p.y)); // Swap y and z for js coordinate system
     const geometry = new BufferGeometry().setFromPoints(points);
@@ -954,21 +981,17 @@ window["addTrajectory"] = function()
 	line.scale.y = 1;
 	line.scale.z = 1;
 	line.geometry.setDrawRange( 0, 1 );
-	
-	shadowBallLinePoints.push(new Vector3(points[0].x,points[0].y,points[0].z));
-    const geometry1 = new BufferGeometry().setFromPoints(shadowBallLinePoints);
-	const material1 = new LineBasicMaterial( { color: 0xffffff } );
-	const line1 = new Line(geometry1, material1);
-	
+
     myShotGroup.add(line);
 	//scene.add(line1);
 	window["myLine"] = line;
-	window["myShadowBallLine"] = line1;
 }
 
 window["setTarget"] = function(x,z)
 {
+
 	const v1 = new Vector3(myShotGroup.position.x-x,myShotGroup.position.z-z,0);
+	v1.normalize();
 	const v2 = new Vector3(0,-1,0);
 	
 	// Calculate the smallest angle between the two vectors (in radians)
@@ -992,7 +1015,47 @@ window["setTarget"] = function(x,z)
 	
 	myShotGroup.rotation.y = fullAngle;
 	
+	try{
+		if(myTargetLine)
+		{
+			myShotGroup.remove(myTargetLine);
+		}
+	}
+	catch(e)
+	{
+		// no worries
+	}
+	
+	var points = [];
+	
+	points.push(new Vector3());
+	//points[0].copy(myShotGroup.position);
+	
+	var v4 = new Vector2(x,z);
+	var v5 = new Vector2(myShotGroup.position.x,myShotGroup.position.z);
+	
+	
+	points.push(new Vector3());
+	points[1].set(0,v4.distanceTo(v5)/20,v4.distanceTo(v5)/10);
+	const geometry = new BufferGeometry().setFromPoints(points);
+	const material = new LineBasicMaterial( { color: 0x002920 } );
+    const line = new Line(geometry, material);
+	line.scale.x = 1;
+	line.scale.y = 1;
+	line.scale.z = 1;
+
+    myShotGroup.add(line);
+	//scene.add(line1);
+	window["myTargetLine"] = line;
+	
 }
+
+function modifyTargetAngle(increment)
+{
+	myShotGroup.rotation.y += (increment);
+
+}
+
 
 window.onkeyup = function(e) {
    var key = e.keyCode ? e.keyCode : e.which;
@@ -1154,6 +1217,14 @@ function startShot()
 			step = 0;
 			prevDistance = 0;
 			emulator.sendAck(202,"Ready");
+			const pointObj = mySvg.createSVGPoint();
+			pointObj.x = ballPosition.z;
+			pointObj.y = -ballPosition.x;
+
+			 myElements[selectedHole].children[1]; // <-- green object
+			var isPointInFill = myElements[selectedHole].children[1].isPointInFill(pointObj);
+			//console.log("Did you hit the green? " + isPointInFill);
+			
 			if(!continueFromShot)
 			{
 				setTimeout(() => {
@@ -1163,11 +1234,31 @@ function startShot()
 			}
 			else
 			{
-				myLine.geometry.setDrawRange( 0, 1 );
-				myShotGroup.position.copy(ballPosition);
-				myBall.position.set(0,0,0);
-				moveToHole(false,false);
-				myTransition.camera.lookAt(myMarker.position);
+				if(isPointInFill)
+				{
+					emulator.sendAck(202,"Ready");
+					setTimeout(()=>{
+						selectedHole++;
+						if(selectedHole > 18)
+						{
+							selectedHole = 1;
+						}
+						myLine.geometry.setDrawRange( 0, 1 );
+						myShotGroup.position.copy(ballPosition);
+						myBall.position.set(0,0,0);
+						updateHoleNumber(selectedHole);
+						myTransition.camera.lookAt(myMarker.position);
+					},1500);
+				}
+				else
+				{
+					myLine.geometry.setDrawRange( 0, 1 );
+					myShotGroup.position.copy(ballPosition);
+					myBall.position.set(0,0,0);
+					moveToHole(false,false);
+					myTransition.camera.lookAt(myMarker.position);
+					emulator.sendAck(202,"Ready");
+				}
 			}
 		}
 
