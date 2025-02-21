@@ -1235,32 +1235,32 @@ function startShot()
 			}
 			else
 			{
-				if(isPointInFill)
-				{
-					emulator.sendAck(202,"Ready");
-					setTimeout(()=>{
-						selectedHole++;
-						if(selectedHole > 18)
-						{
-							selectedHole = 1;
-						}
+				setTimeout(()=>{
+					if(isPointInFill)
+					{
+						setTimeout(()=>{
+							selectedHole++;
+							if(selectedHole > 18)
+							{
+								selectedHole = 1;
+							}
+							myLine.geometry.setDrawRange( 0, 1 );
+							myShotGroup.position.copy(ballPosition);
+							myBall.position.set(0,0,0);
+							updateHoleNumber(selectedHole);
+							myTransition.camera.lookAt(myMarker.position);
+						},1500);
+					}
+					else
+					{
 						myLine.geometry.setDrawRange( 0, 1 );
 						myShotGroup.position.copy(ballPosition);
 						myBall.position.set(0,0,0);
-						updateHoleNumber(selectedHole);
+						moveToHole(false,false);
 						myTransition.camera.lookAt(myMarker.position);
-					},1500);
-				}
-				else
-				{
-					emulator.sendAck(202,"Ready");
-					myLine.geometry.setDrawRange( 0, 1 );
-					myShotGroup.position.copy(ballPosition);
-					myBall.position.set(0,0,0);
-					moveToHole(false,false);
-					myTransition.camera.lookAt(myMarker.position);
-					
-				}
+						
+					}
+				},300);
 			}
 		}
 
