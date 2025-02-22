@@ -76,3 +76,20 @@ C:\Users\jooansk\GoogleEarthGolf>npm run preview
   ➜  press h + enter to show help
 ```
 
+# How to use the UI
+There are few things that may not be that intuitive but good to know:
+
+First of all if you want to get deeper look how the Google Earth side of things is made possible, here is a link which also provides some good examples and how this could be further improved:
+https://github.com/NASA-AMMOS/3DTilesRendererJS?tab=readme-ov-file
+
+![Navigation](public/HoleNavigation.png.png)
+
+1. You can jump to different holes by pressing corresponding number. Also you can relocate yourself to that teebox.
+
+2. There are also two arrows for you to adjust your target line. This will also be adjusted if you left mouse click in the view. Then this mouse click position will be set as the target line.
+
+3. You can reposition yourself to new position by double clicking the view.
+
+4. Right mouse click enables you to rotate around the click position.
+
+5. Mouse scroll will enable you to zoom in and out within certain degree..
