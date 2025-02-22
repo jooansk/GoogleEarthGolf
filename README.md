@@ -82,7 +82,7 @@ There are few things that may not be that intuitive but good to know:
 First of all if you want to get deeper look how the Google Earth side of things is made possible, here is a link which also provides some good examples and how this could be further improved:
 https://github.com/NASA-AMMOS/3DTilesRendererJS?tab=readme-ov-file
 
-![Navigation](public/HoleNavigation.png.png)
+![Navigation](public/HoleNavigation.png)
 
 1. You can jump to different holes by pressing corresponding number. Also you can relocate yourself to that teebox.
 
