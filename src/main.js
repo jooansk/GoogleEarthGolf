@@ -400,7 +400,7 @@ function init(course) {
 			
 			myLat = tempPos.lat;
 			myLon = tempPos.lon;
-			
+			console.log(myLat,myLon);
 			const elements = mySvg.querySelectorAll('[inkscape\\:label]');
 
 			// Filter elements where the inkscape:label attribute starts with "Hole"
