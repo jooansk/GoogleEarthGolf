@@ -198,6 +198,7 @@ window["myfunction"] = function()
 
 window["takeAshot"] = function(bs1,va,ha,bs,ss)
 {
+	console.log("take a shot!");
 	window["myShot"] = new SqShot(bs1,va,ha,bs,ss);
 	ballspeed.setValue(parseFloat(bs1).toFixed(1));
 	vla.setValue(parseFloat(va).toFixed(2));
@@ -400,7 +401,6 @@ function init(course) {
 			
 			myLat = tempPos.lat;
 			myLon = tempPos.lon;
-			console.log(myLat,myLon);
 			const elements = mySvg.querySelectorAll('[inkscape\\:label]');
 
 			// Filter elements where the inkscape:label attribute starts with "Hole"
@@ -815,7 +815,10 @@ window["setMarker"] = function(x,y,z,redo=false)
 	var v5 = new Vector2(distanceToTarget.x,distanceToTarget.z);
 	
 	var distToTarget = distanceUnit == 'meters' ? v4.distanceTo(v5) : v4.distanceTo(v5)*1.0936133;
-	clubSelected(getBestClubName(distanceUnit == 'yards' ? distToTarget : distToTarget*1.0936133));
+	if(!redo)
+	{
+		clubSelected(getBestClubName(distanceUnit == 'yards' ? distToTarget : distToTarget*1.0936133));
+	}
 	//var text = `${distanceToTarget.distanceTo(myMarker.position)*1.0936133} yards`;
 	drawingContext.fillText(`${parseFloat(distToTarget).toFixed(1)}  ${distanceUnit}`, 40, -80);
 	// need to flag the map as needing updating.
@@ -873,6 +876,18 @@ window["setCamera"] = function()
 	},1000);
 }
 
+
+window["test"] = function(value)
+{
+	if(value)
+	{
+		emulator.sendAck(202,"Ready");
+	}
+	else
+	{
+		emulator.sendAck(203,"adsf");
+	}
+}
 
 function onWindowResize() {
 
@@ -1222,8 +1237,9 @@ function startShot()
 			pointObj.x = ballPosition.z;
 			pointObj.y = -ballPosition.x;
 			 myElements[selectedHole].children[1]; // <-- green object
-			var isPointInFill = myElements[selectedHole].children[1].isPointInFill(pointObj);
-			//console.log("Did you hit the green? " + isPointInFill);
+			var isPointInFill = myElements[selectedHole].children[myElements[selectedHole].children.length-2].isPointInFill(pointObj);
+			console.log("Did you hit the green? " + isPointInFill);
+			
 			if(!(settings.getSettings().continueShots == 'yes'))
 			{
 				setTimeout(() => {
