@@ -9,6 +9,7 @@ class GsProApiEmulator {
 		this.timeout;
 		this.msgReceived = false;
 		this.connect();
+		this.lastShotIdReceived = -1;
   }
   
 	connect()
@@ -41,22 +42,21 @@ class GsProApiEmulator {
 					}
 			}
 			
-			if(jsonData.ShotDataOptions.ContainsBallData || jsonData.ShotDataOptions.ContainsClubData)
+			if(this.lastShotIdReceived != jsonData.ShotNumber)
 			{
 				this.sendAck(200,"Ball Data received");
-				if(jsonData.ShotDataOptions.ContainsClubData)
+				if(this.lastShotIdReceived != -1)
 				{
-					console.log(jsonData);
-					this.shotReceived(jsonData.BallData.Speed,jsonData.BallData.VLA,jsonData.BallData.HLA,jsonData.BallData.BackSpin,jsonData.BallData.SideSpin);
-					//simulationComplete = false;
+					this.shotReceived(jsonData.BallData.Speed,jsonData.BallData.VLA,jsonData.BallData.HLA,jsonData.BallData.BackSpin,jsonData.BallData.SideSpin);		
 				}
+				this.lastShotIdReceived = jsonData.ShotNumber;				
 			}
 			
 		}
 		
 		
 		this.ws.onclose = (evt) => {
-			console.log("ws comm closed! Trying to reconnect");
+			console.log("Ws comm closed! Trying to reconnect");
 			this.connected = false;
 			this.connect();
 		}
@@ -64,7 +64,7 @@ class GsProApiEmulator {
 		this.ws.onopen = (evt) => {
 			this.connected = true;
 			this.callback();
-			console.log("Connected to python script.");
+			console.log("Connected to bridge wrapper.");
 			setTimeout(() => {
 				if(!this.msgReceived)
 				{
@@ -87,7 +87,7 @@ class GsProApiEmulator {
 		}
 		else
 		{
-			console.warn("Python script is not running..");
+			console.warn("Bridge wrapper (Python script?) is not running..");
 		}
 	}
 
@@ -107,7 +107,7 @@ class GsProApiEmulator {
 		}
 		else
 		{
-			console.warn("Python script is not running..");
+			console.warn("Bridge wrapper (Python script?) is not running..");
 		}
 	}
  }
