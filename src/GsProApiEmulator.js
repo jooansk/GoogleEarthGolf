@@ -45,7 +45,7 @@ class GsProApiEmulator {
 			if(this.lastShotIdReceived != jsonData.ShotNumber)
 			{
 				this.sendAck(200,"Ball Data received");
-				if(this.lastShotIdReceived != -1)
+				if((this.lastShotIdReceived != -1) && (jsonData.BallData.Speed > 0))
 				{
 					this.shotReceived(jsonData.BallData.Speed,jsonData.BallData.VLA,jsonData.BallData.HLA,jsonData.BallData.BackSpin,jsonData.BallData.SideSpin);		
 				}
